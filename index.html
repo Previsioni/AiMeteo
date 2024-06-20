@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AiMeteo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #00796b;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header .logo h1 {
+            margin: 0;
+        }
+
+        .search-section {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        #city-input {
+            padding: 10px;
+            font-size: 1.2em;
+            width: 300px;
+        }
+
+        #search-btn {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            background-color: #00796b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #search-btn:hover {
+            background-color: #005f56;
+        }
+
+        #weather-info {
+            margin: 20px auto;
+            max-width: 1000px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .day {
+            margin-bottom: 20px;
+        }
+
+        .day h3 {
+            background-color: #00796b;
+            color: white;
+            padding: 10px;
+            margin: 0;
+        }
+
+        .forecast-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .forecast-table th, .forecast-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .forecast-table th {
+            background-color: #005f56;
+            color: white;
+        }
+
+        .forecast-table td {
+            background-color: #ffffff;
+            color: #333;
+        }
+
+        .forecast-table th i, .forecast-table td i {
+            margin-right: 5px;
+        }
+
+        .weather-icon img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .weather-icon.sun {
+            color: #FFA500; /* Orange */
+        }
+
+        .weather-icon.cloud {
+            color: #808080; /* Gray */
+        }
+
+        footer {
+            background-color: #00796b;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>AiMeteo</h1>
+        </div>
+    </header>
+    <main>
+        <section class="search-section">
+            <input type="text" id="city-input" placeholder="Inserisci il nome della città">
+            <button id="search-btn">Cerca</button>
+        </section>
+        <section id="weather-info">
+            <!-- Le previsioni meteo verranno visualizzate qui -->
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 AiMeteo</p>
+    </footer>
+    <script>
+        const apiKey = 'bdabacebeb8c41c5836d5c2a44c18156';
+
+        document.getElementById('search-btn').addEventListener('click', () => {
+            const city = document.getElementById('city-input').value;
+            if (city) {
+                fetchWeather(city);
+            }
+        });
+
+        document.getElementById('city-input').addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                const city = document.getElementById('city-input').value;
+                if (city) {
+                    fetchWeather(city);
+                }
+            }
+        });
+
+        async function fetchWeather(city) {
+            const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${apiKey}&lang=it`;
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                if (response.ok) {
+                    updateWeather(data);
+                } else {
+                    document.getElementById('weather-info').innerHTML = `<p>Errore: ${data.message}</p>`;
+                }
+            } catch (error) {
+                console.error('Errore nel recupero dei dati meteo:', error);
+                document.getElementById('weather-info').innerHTML = `<p>Errore nel recupero dei dati meteo. Per favore riprova.</p>`;
+            }
+        }
+
+        function updateWeather(data) {
+            const weatherInfo = document.getElementById('weather-info');
+            const forecastsByDate = {};
+
+            data.list.forEach(item => {
+                const date = new Date(item.dt_txt).toLocaleDateString('it-IT');
+                if (!forecastsByDate[date]) {
+                    forecastsByDate[date] = [];
+                }
+                forecastsByDate[date].push(item);
+            });
+
+            weatherInfo.innerHTML = `<h2>Previsioni per ${data.city.name}, ${data.city.country} (Fuso orario: ${getTimezone(data.city.timezone)})</h2>`;
+            Object.keys(forecastsByDate).forEach(date => {
+                weatherInfo.innerHTML += `
+                    <div class="day">
+                        <h3>${date}</h3>
+                        ${createForecastTable(forecastsByDate[date])}
+                    </div>
+                `;
+            });
+        }
+
+        function createForecastTable(forecastData) {
+            let table = '<table class="forecast-table">';
+            table += `
+                <tr>
+                    <th><i class="fas fa-clock"></i>Orario</th>
+                    <th><i class="fas fa-cloud-sun"></i>Condizioni</th>
+                    <th><i class="fas fa-thermometer-half"></i>Temperatura</th>
+                    <th><i class="fas fa-wind"></i>Vento</th>
+                    <th><i class="fas fa-tint"></i>Umidità</th>
+                </tr>`;
+            forecastData.forEach(item => {
+                const time = new Date(item.dt_txt).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+                const conditions = item.weather[0].description;
+                const temperature = `${item.main.temp}°C`;
+                const wind = `${item.wind.speed} km/h`;
+                const humidity = `${item.main.humidity}%`;
+                const icon = `http://openweathermap.org/img/wn/${item.weather[0].icon}.png`;
+                const weatherIconClass = getWeatherIconClass(item.weather[0].icon);
+                table += `
+                    <tr>
+                        <td>${time}</td>
+                        <td><span class="weather-icon ${weatherIconClass}"><img src="${icon}" alt="${conditions}"></span> ${conditions}</td>
+                        <td>${temperature}</td>
+                        <td>${wind}</td>
+                        <td>${humidity}</td>
+                    </tr>`;
+            });
+            table += '</table>';
+            return table;
+        }
+
+        function getWeatherIconClass(icon) {
+            if (icon.includes('d')) { // day icons
+                return 'sun';
+            } else if (icon.includes('n')) { // night icons
+                return 'cloud';
+            } else {
+                return '';
+            }
+        }
+
+        function getTimezone(offset) {
+            const hours = Math.floor(offset / 3600);
+            const minutes = Math.abs(offset % 3600 / 60);
+            return `UTC${hours >= 0 ? '+' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+        }
+    </script>
+</body>
+</html>
