@@ -8,122 +8,30 @@
     <meta name="keywords" content="meteo, previsioni, tempo, città, accurate">
     <meta name="author" content="Giorgio Occhi">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://GiorgioOcchi.github.io/AiMeteo">
+    <meta name="google-site-verification" content="CODICE_FORNITO_DA_GOOGLE">
+    <link rel="canonical" href="https://previsioni.github.io/AiMeteo/">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
-
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f0f0f0;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #00796b;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-        }
-
-        header .logo h1 {
-            margin: 0;
-        }
-
-        .search-section {
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        #city-input {
-            padding: 10px;
-            font-size: 1.2em;
-            width: 300px;
-        }
-
-        #search-btn {
-            padding: 10px 20px;
-            font-size: 1.2em;
-            background-color: #00796b;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        #search-btn:hover {
-            background-color: #005f56;
-        }
-
-        #weather-info {
-            margin: 20px auto;
-            max-width: 1000px;
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-
-        .day {
-            margin-bottom: 20px;
-        }
-
-        .day h3 {
-            background-color: #00796b;
-            color: white;
-            padding: 10px;
-            margin: 0;
-        }
-
-        .forecast-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .forecast-table th, .forecast-table td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: center;
-        }
-
-        .forecast-table th {
-            background-color: #005f56;
-            color: white;
-        }
-
-        .forecast-table td {
-            background-color: #ffffff;
-            color: #333;
-        }
-
-        .forecast-table th i, .forecast-table td i {
-            margin-right: 5px;
-        }
-
-        .weather-icon img {
-            width: 50px;
-            height: 50px;
-        }
-
-        .weather-icon.sun {
-            color: #FFA500; /* Orange */
-        }
-
-        .weather-icon.cloud {
-            color: #808080; /* Gray */
-        }
-
-        footer {
-            background-color: #00796b;
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-        }
+        body { font-family: 'Roboto', sans-serif; background-color: #f0f0f0; color: #333; margin: 0; padding: 0; }
+        header { background-color: #00796b; color: white; padding: 20px 0; text-align: center; }
+        header .logo h1 { margin: 0; }
+        .search-section { text-align: center; margin: 20px 0; }
+        #city-input { padding: 10px; font-size: 1.2em; width: 300px; }
+        #search-btn { padding: 10px 20px; font-size: 1.2em; background-color: #00796b; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        #search-btn:hover { background-color: #005f56; }
+        #weather-info { margin: 20px auto; max-width: 1000px; background-color: white; padding: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 10px; }
+        .day { margin-bottom: 20px; }
+        .day h3 { background-color: #00796b; color: white; padding: 10px; margin: 0; }
+        .forecast-table { width: 100%; border-collapse: collapse; }
+        .forecast-table th, .forecast-table td { padding: 10px; border: 1px solid #ddd; text-align: center; }
+        .forecast-table th { background-color: #005f56; color: white; }
+        .forecast-table td { background-color: #ffffff; color: #333; }
+        .forecast-table th i, .forecast-table td i { margin-right: 5px; }
+        .weather-icon img { width: 50px; height: 50px; }
+        .weather-icon.sun { color: #FFA500; }
+        .weather-icon.cloud { color: #808080; }
+        footer { background-color: #00796b; color: white; text-align: center; padding: 10px 0; position: fixed; width: 100%; bottom: 0; }
     </style>
 </head>
 <body>
@@ -190,7 +98,6 @@
                 }
                 forecastsByDate[date].push(item);
             });
-
             weatherInfo.innerHTML = `<h2>Previsioni per ${data.city.name}, ${data.city.country} (Fuso orario: ${getTimezone(data.city.timezone)})</h2>`;
             Object.keys(forecastsByDate).forEach(date => {
                 weatherInfo.innerHTML += `
@@ -251,3 +158,4 @@
     </script>
 </body>
 </html>
+
